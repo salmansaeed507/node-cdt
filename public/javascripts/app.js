@@ -44,13 +44,13 @@ var canvas = {
 
         $(canvas.canvas).mousedown(function(e){
             canvas.mousePressed = true;
-            canvas.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+            canvas.draw(null,null,e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
         });
 
         $(canvas.canvas).mousemove(function(e){
             if (canvas.mousePressed) {
-                canvas.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
-                canvas.socket.emit('draw', {x:e.pageX - $(this).offset().left,y:e.pageY - $(this).offset().top,isdown:true});
+                canvas.socket.emit('draw', {a:canvas.lastX, b:canvas.lastY, x:e.pageX - $(this).offset().left,y:e.pageY - $(this).offset().top,isdown:true,controls:canvas.controls});
+                canvas.draw(canvas.lastX, canvas.lastY, e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
             }
         });
 
@@ -59,14 +59,14 @@ var canvas = {
         });
 
         canvas.socket.on('draw', function(data){
-            canvas.draw(data.x,data.y,data.isdown);
+            canvas.draw(data.a,data.b,data.x,data.y,data.isdown,data.controls);
         });
 
         canvas.socket.on('drawShape', function(data){
             canvas.drawShape(data,true);
         });
     },
-    draw: (x,y,isDown,controls) => {
+    draw: (a,b,x,y,isDown,controls) => {
         if (isDown) {
             if (!controls) {
                 controls = canvas.controls;
@@ -75,7 +75,7 @@ var canvas = {
             canvas.ctx.strokeStyle = controls.color;
             canvas.ctx.lineWidth = controls.line;
             canvas.ctx.lineJoin = "round";
-            canvas.ctx.moveTo(canvas.lastX, canvas.lastY);
+            canvas.ctx.moveTo(a, b);
             canvas.ctx.lineTo(x, y);
             canvas.ctx.closePath();
             canvas.ctx.stroke();
