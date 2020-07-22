@@ -42,6 +42,13 @@ var canvas = {
             $('#shape').show();
         });
 
+        $('#download').click(function(){
+            var link = document.createElement('a');
+            link.download = 'filename.png';
+            link.href = canvas.canvas.toDataURL('image/jpeg');
+            link.click();
+        });
+
         $(canvas.canvas).mousedown(function(e){
             canvas.mousePressed = true;
             canvas.draw(null,null,e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
@@ -64,6 +71,10 @@ var canvas = {
 
         canvas.socket.on('drawShape', function(data){
             canvas.drawShape(data,true);
+        });
+
+        canvas.socket.on('clear', function(data){
+            canvas.clear(true);
         });
     },
     draw: (a,b,x,y,isDown,controls) => {
@@ -114,9 +125,12 @@ var canvas = {
         canvas.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
         canvas.ctx.stroke();
     },
-    clear: () => {
+    clear: (noemit) => {
         canvas.ctx.setTransform(1, 0, 0, 1, 0, 0);
         canvas.ctx.clearRect(0, 0, canvas.ctx.canvas.width, canvas.ctx.canvas.height);
+        if (!noemit) {
+            canvas.socket.emit('clear');
+        }
     }
 };
 

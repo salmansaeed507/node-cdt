@@ -22,6 +22,10 @@ io.on('connection', function(socket) {
     socket.on('drawShape', function(data){
         io.sockets.emit('drawShape',data);
     });
+
+    socket.on('clear', function(){
+        io.sockets.emit('clear');
+    });
     
     socket.on('disconnect', function () {
        console.log('A user disconnected');
