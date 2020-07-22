@@ -1,0 +1,46 @@
+doctype html
+html
+    head
+        title Collaborative Drawing
+        script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css', type='text/css' )
+        link(rel='stylesheet', href='/css/app.css', type='text/css' )
+    body
+        div.left
+            canvas#myCanvas(width="700",height="600")
+            canvas#shape(width="700",height="600",style='display:none;')
+        div.right
+            h1 Collaborative Drawing
+            p.
+                Use following tools to draw, write, make shapes, choose colors and fill colors. <br>Maximum 10 users are supported.
+                <br>Tools: Node.js | Express | Socket.io | pug | nodemon
+                <br>Git: <a href="">http://www.git.com</a>
+
+            table.table
+                tr
+                    td Line
+                    td
+                        input#range(type='range',min=1,max=30,value=3)
+                tr
+                    td Color
+                    td
+                        select#color
+                            option Black
+                            option Blue
+                            option Red
+                            option Green
+                            option Yellow
+                            option Orange
+                tr
+                    td(colspan=2)
+                        button#square Square 
+                        = ' '
+                        button#circle Circle
+                tr
+                    td(colspan=2)
+                        button#reset.btn.btn-warning(type='button') Clear
+                        = ' '
+                        button.btn.btn-primary(type='button') Download
+
+        script(src='/javascripts/app.js')
