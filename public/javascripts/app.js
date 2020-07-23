@@ -76,6 +76,22 @@ var canvas = {
         canvas.socket.on('clear', function(data){
             canvas.clear(true);
         });
+        
+        canvas.socket.on('needcanvas', function(){
+            var data = canvas.canvas.toDataURL();
+            canvas.socket.emit('clientcanvas', data);
+        });
+
+        canvas.socket.on('updatecanvas', function(base64){
+            var el = document.createElement('p');
+            el.style.display = 'none';
+            el.innerHTML = '<img src="'+base64+'" />';
+            var input = el.firstChild;
+            document.body.append(el);
+            setTimeout(function(){
+                canvas.ctx.drawImage(input,0,0);
+            },10);
+        });
     },
     draw: (a,b,x,y,isDown,controls) => {
         if (isDown) {

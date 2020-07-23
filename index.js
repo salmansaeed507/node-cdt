@@ -15,16 +15,26 @@ const io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
 
+    socket.broadcast.emit('needcanvas');
+
+    var canvas = null;
+    socket.on('clientcanvas', function(data){
+        if (!canvas) {
+            canvas = data;
+            socket.broadcast.emit('updatecanvas',canvas);
+        }
+    });
+
     socket.on('draw',function(data){
-        io.sockets.emit('draw',data);
+        socket.broadcast.emit('draw',data);
     });
 
     socket.on('drawShape', function(data){
-        io.sockets.emit('drawShape',data);
+        socket.broadcast.emit('drawShape',data);
     });
 
     socket.on('clear', function(){
-        io.sockets.emit('clear');
+        socket.broadcast.emit('clear');
     });
     
     socket.on('disconnect', function () {
